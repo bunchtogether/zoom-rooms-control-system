@@ -554,6 +554,7 @@ class ZoomRoomsControlSystem extends EventEmitter {
       const timeout = setTimeout(() => {
         this.removeListener('error', handleError);
         this.removeListener('zCommand', handleCommand);
+        reject(new Error('timeout waiting for command'));
       }, duration);
       const handleCommand = (tk:string, top:Object) => {
         if (topKey && tk === topKey) {
@@ -583,6 +584,7 @@ class ZoomRoomsControlSystem extends EventEmitter {
       const timeout = setTimeout(() => {
         this.removeListener('error', handleError);
         this.removeListener('zConfiguration', handleConfiguration);
+        reject(new Error('timeout waiting for configuration'));
       }, duration);
       const handleConfiguration = (tk:string, top:Object) => {
         if (topKey && tk === topKey) {
@@ -612,6 +614,7 @@ class ZoomRoomsControlSystem extends EventEmitter {
       const timeout = setTimeout(() => {
         this.removeListener('error', handleError);
         this.removeListener('zStatus', handleStatus);
+        reject(new Error('timeout waiting for status'));
       }, duration);
       const handleStatus = (tk:string, top:Object) => {
         if (topKey && tk === topKey) {
