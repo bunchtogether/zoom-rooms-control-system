@@ -65,7 +65,7 @@ class ZoomRoomsControlSystem extends EventEmitter {
 
     zcommand.call.disconnect = () => {
       this.command('zcommand call disconnect');
-      return this.waitForCommand('CallDisconnect');
+      return this.waitForCommand('CallDisconnectResult');
     };
 
     zcommand.call.info = () => {
@@ -125,7 +125,7 @@ class ZoomRoomsControlSystem extends EventEmitter {
 
     zcommand.call.leave = () => {
       this.command('zcommand call leave');
-      return this.waitForCommand('CallDisconnect');
+      return this.waitForCommand('CallDisconnectResult');
     };
 
     zcommand.call.invite = (parameters:{user: string, users: Array<string>}) => {
