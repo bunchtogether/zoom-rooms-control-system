@@ -549,7 +549,7 @@ class ZoomRoomsControlSystem extends EventEmitter {
   }
 
 
-  waitForCommand(topKey        , duration          = 5000)                 {
+  waitForCommand(topKey        , duration          = 15000)                 {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         this.removeListener('error', handleError);
@@ -557,16 +557,12 @@ class ZoomRoomsControlSystem extends EventEmitter {
         reject(new Error('timeout waiting for command'));
       }, duration);
       const handleCommand = (tk       , top       ) => {
-        if (topKey && tk === topKey) {
+        if (!topKey || (topKey && tk === topKey)) {
+          clearTimeout(timeout);
+          this.removeListener('error', handleError);
+          this.removeListener('zCommand', handleCommand);
           resolve(top);
-        } else if (!topKey) {
-          resolve(top);
-        } else {
-          return;
         }
-        clearTimeout(timeout);
-        this.removeListener('error', handleError);
-        this.removeListener('zCommand', handleCommand);
       };
       const handleError = (error) => {
         clearTimeout(timeout);
@@ -579,7 +575,7 @@ class ZoomRoomsControlSystem extends EventEmitter {
     });
   }
 
-  waitForConfiguration(topKey        , duration          = 5000)                 {
+  waitForConfiguration(topKey        , duration          = 15000)                 {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         this.removeListener('error', handleError);
@@ -587,16 +583,12 @@ class ZoomRoomsControlSystem extends EventEmitter {
         reject(new Error('timeout waiting for configuration'));
       }, duration);
       const handleConfiguration = (tk       , top       ) => {
-        if (topKey && tk === topKey) {
+        if (!topKey || (topKey && tk === topKey)) {
+          clearTimeout(timeout);
+          this.removeListener('error', handleError);
+          this.removeListener('zConfiguration', handleConfiguration);
           resolve(top);
-        } else if (!topKey) {
-          resolve(top);
-        } else {
-          return;
         }
-        clearTimeout(timeout);
-        this.removeListener('error', handleError);
-        this.removeListener('zConfiguration', handleConfiguration);
       };
       const handleError = (error) => {
         clearTimeout(timeout);
@@ -609,7 +601,7 @@ class ZoomRoomsControlSystem extends EventEmitter {
     });
   }
 
-  waitForStatus(topKey        , duration          = 5000)                 {
+  waitForStatus(topKey        , duration          = 15000)                 {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         this.removeListener('error', handleError);
@@ -617,16 +609,12 @@ class ZoomRoomsControlSystem extends EventEmitter {
         reject(new Error('timeout waiting for status'));
       }, duration);
       const handleStatus = (tk       , top       ) => {
-        if (topKey && tk === topKey) {
+        if (!topKey || (topKey && tk === topKey)) {
+          clearTimeout(timeout);
+          this.removeListener('error', handleError);
+          this.removeListener('zStatus', handleStatus);
           resolve(top);
-        } else if (!topKey) {
-          resolve(top);
-        } else {
-          return;
         }
-        clearTimeout(timeout);
-        this.removeListener('error', handleError);
-        this.removeListener('zStatus', handleStatus);
       };
       const handleError = (error) => {
         clearTimeout(timeout);
