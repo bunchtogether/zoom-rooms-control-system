@@ -661,7 +661,9 @@ class ZoomRoomsControlSystem extends EventEmitter {
     if (!connection) {
       throw new Error('Connection does not exist');
     }
-    stream.end('bye\r');
+    stream.write('bye');
+    await this.waitForStatus();
+    connection.end();
     await new Promise((resolve, reject) => {
       const handleClose = () => {
         connection.removeListener('error', handleError);

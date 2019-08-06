@@ -538,7 +538,7 @@ class ZoomRoomsControlSystem extends EventEmitter {
             }
             lines = null;
           }
-        } else if(line === '*r Login successful') {
+        } else if (line === '*r Login successful') {
           this.emit('zStatus', 'Login', {});
           return;
         }
@@ -661,7 +661,9 @@ class ZoomRoomsControlSystem extends EventEmitter {
     if (!connection) {
       throw new Error('Connection does not exist');
     }
-    stream.end('bye\r');
+    stream.write('bye');
+    await this.waitForStatus();
+    connection.end();
     await new Promise((resolve, reject) => {
       const handleClose = () => {
         connection.removeListener('error', handleError);
