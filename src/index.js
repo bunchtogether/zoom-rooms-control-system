@@ -459,7 +459,6 @@ class ZoomRoomsControlSystem extends EventEmitter {
   }
 
   async connect() {
-    const loginPromise = this.waitForStatus('Login');
     const connection = new Client();
     connection.connect({
       port: 2244,
@@ -547,7 +546,7 @@ class ZoomRoomsControlSystem extends EventEmitter {
     this.stream = stream;
     this.connection = connection;
     this.command('format json');
-    this.version = await loginPromise;
+    this.version = await this.waitForStatus('Login');
     await this.waitForStatus();
   }
 
