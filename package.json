@@ -1,12 +1,12 @@
 {
   "name": "@bunchtogether/zoom-rooms-control-system",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/index.js",
   "repository": "https://github.com/bunchtogether/zoom-rooms-control-system.git",
   "author": "John Wehr <johnwehr@bunchenterprise.com>",
   "license": "MIT",
   "scripts": {
-    "build": "rm -rf ./dist && flow-remove-types ./src --out-dir ./dist",
+    "build": "rimraf ./dist && flow-remove-types ./src --out-dir ./dist",
     "flow-typed": "./node_modules/.bin/flow-typed install --overwrite",
     "test": "yarn lint && yarn test:js",
     "test:js": "cross-env NODE_ENV=test jest --runInBand /Users/johnwehr/Projects/zoom-rooms-control-system/tests/configuration.test.js",
@@ -56,6 +56,7 @@
     "jest": "^24.8.0",
     "jest-flow-transform": "^1.0.1",
     "pre-commit": "^1.2.2",
+    "rimraf": "^2.6.3",
     "uuid": "^3.3.2"
   },
   "dependencies": {

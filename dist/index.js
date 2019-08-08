@@ -488,7 +488,11 @@ class ZoomRoomsControlSystem extends EventEmitter {
       });
     });
     connection.on('error', (error) => {
-      this.emit('error', error);
+      if(error.code === 'ECONNABORTED') {
+        this.emit('close');
+      } else {
+        this.emit('error', error);
+      }
       delete this.stream;
       delete this.connection;
     });
@@ -659,21 +663,24 @@ class ZoomRoomsControlSystem extends EventEmitter {
     const connection = this.connection;
     if (!connection) {
       throw new Error('Connection does not exist');
-    }
-    stream.write('bye');
-    await this.waitForStatus();
-    connection.end();
+    }    
     await new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        connection.end();
+      }, 3000);
       const handleClose = () => {
+        clearTimeout(timeout);
         connection.removeListener('error', handleError);
         resolve();
       };
       const handleError = (error) => {
+        clearTimeout(timeout);
         connection.removeListener('close', handleClose);
         reject(error);
       };
-      connection.once('close', handleClose);
-      connection.once('error', handleError);
+      this.once('close', handleClose);
+      this.once('error', handleError);
+      stream.write('bye\r');
     });
   }
 }
