@@ -333,12 +333,14 @@ class ZoomRoomsControlSystem extends EventEmitter {
       return this.waitForConfiguration();
     };
 
-    zconfiguration.audio.output = (parameters:{selectedID: string}) => {
+    zconfiguration.audio.output = {};
+
+    zconfiguration.audio.output.selectedID = (parameters:{selectedID: string}) => {
       this.command('zconfiguration audio output', parameters);
       return this.waitForConfiguration();
     };
 
-    zconfiguration.audio.output = (parameters:{volume: number}) => {
+    zconfiguration.audio.output.volume = (parameters:{volume: number}) => {
       this.command('zconfiguration audio output', parameters);
       return this.waitForConfiguration();
     };
@@ -675,7 +677,7 @@ class ZoomRoomsControlSystem extends EventEmitter {
     const connection = this.connection;
     if (!connection) {
       throw new Error('Connection does not exist');
-    }    
+    }
     await new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         connection.end();
