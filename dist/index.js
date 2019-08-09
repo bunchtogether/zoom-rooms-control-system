@@ -154,7 +154,7 @@ class ZoomRoomsControlSystem extends EventEmitter {
     };
 
     zcommand.dial.sharing = (parameters                                                                              ) => {
-      this.command('zcommand dial sharing(', parameters);
+      this.command('zcommand dial sharing', parameters);
       return this.waitForCommand();
     };
 
