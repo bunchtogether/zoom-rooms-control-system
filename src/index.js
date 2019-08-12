@@ -666,7 +666,6 @@ class ZoomRoomsControlSystem extends EventEmitter {
     }
     command.push('\r');
     stream.write(command.join(' '));
-    console.log(`COMMAND ${command.join(' ')}`);
   }
 
   async disconnect() {
