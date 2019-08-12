@@ -38,6 +38,7 @@ class ZoomRoomsControlSystem extends EventEmitter {
       call: {},
       audio: {},
       video: {},
+      client: {}
     };
     this.zconfiguration = zconfiguration;
 
