@@ -377,6 +377,8 @@ class ZoomRoomsControlSystem extends EventEmitter {
       return this.waitForConfiguration();
     };
 
+    zconfiguration.video.camera = {};
+
     zconfiguration.video.camera.selectedID = (selectedID         ) => {
       if (selectedID) {
         this.command('zconfiguration video camera', { selectedID });
