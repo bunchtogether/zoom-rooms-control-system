@@ -1,4 +1,5 @@
 //      
+/* eslint-disable camelcase */
 
 const { EventEmitter } = require('events');
 const { Client } = require('ssh2');
@@ -313,35 +314,61 @@ class ZoomRoomsControlSystem extends EventEmitter {
       return this.waitForConfiguration();
     };
 
-    zconfiguration.audio.input = (parameters                     ) => {
-      this.command('zconfiguration audio input', parameters);
+    zconfiguration.audio.input = {};
+
+    zconfiguration.audio.input.selectedID = (selectedID         ) => {
+      if (selectedID) {
+        this.command('zconfiguration audio input', { selectedID });
+      } else {
+        this.command('zconfiguration audio input selectedID');
+      }
       return this.waitForConfiguration();
     };
 
-    zconfiguration.audio.input = (parameters                                ) => {
-      this.command('zconfiguration audio input', parameters);
+    zconfiguration.audio.input.is_sap_disabled = (is_sap_disabled               ) => {
+      if (is_sap_disabled) {
+        this.command('zconfiguration audio input', { is_sap_disabled });
+      } else {
+        this.command('zconfiguration audio input is_sap_disabled');
+      }
       return this.waitForConfiguration();
     };
 
-    zconfiguration.audio.input = (parameters                              ) => {
-      this.command('zconfiguration audio input', parameters);
+    zconfiguration.audio.input.reduce_reverb = (reduce_reverb               ) => {
+      if (reduce_reverb) {
+        this.command('zconfiguration audio input', { reduce_reverb });
+      } else {
+        this.command('zconfiguration audio input reduce_reverb');
+      }
       return this.waitForConfiguration();
     };
 
-    zconfiguration.audio.input = (parameters                 ) => {
-      this.command('zconfiguration audio input', parameters);
+    zconfiguration.audio.input.volume = (volume         ) => {
+      if (volume) {
+        this.command('zconfiguration audio input', { volume });
+      } else {
+        this.command('zconfiguration audio input volume');
+      }
       return this.waitForConfiguration();
     };
 
     zconfiguration.audio.output = {};
 
-    zconfiguration.audio.output.selectedID = (parameters                     ) => {
-      this.command('zconfiguration audio output', parameters);
+    zconfiguration.audio.output.selectedID = (selectedID         ) => {
+      if (selectedID) {
+        this.command('zconfiguration audio output', { selectedID });
+      } else {
+        this.command('zconfiguration audio output selectedID');
+      }
       return this.waitForConfiguration();
     };
 
-    zconfiguration.audio.output.volume = (parameters                 ) => {
-      this.command('zconfiguration audio output', parameters);
+    zconfiguration.audio.output.volume = (volume         ) => {
+      if (volume) {
+        this.command('zconfiguration audio output', { volume });
+      } else {
+        this.command('zconfiguration audio output volume');
+      }
       return this.waitForConfiguration();
     };
 
@@ -350,23 +377,39 @@ class ZoomRoomsControlSystem extends EventEmitter {
       return this.waitForConfiguration();
     };
 
-    zconfiguration.video.camera = (parameters                     ) => {
-      this.command('zconfiguration video camera', parameters);
+    zconfiguration.video.camera.selectedID = (selectedID         ) => {
+      if (selectedID) {
+        this.command('zconfiguration video camera', { selectedID });
+      } else {
+        this.command('zconfiguration video camera selectedID');
+      }
       return this.waitForConfiguration();
     };
 
-    zconfiguration.video.camera = (parameters                       ) => {
-      this.command('zconfiguration video camera', parameters);
+    zconfiguration.video.camera.mirror = (mirror               ) => {
+      if (mirror) {
+        this.command('zconfiguration video camera', { mirror });
+      } else {
+        this.command('zconfiguration video camera mirror');
+      }
       return this.waitForConfiguration();
     };
 
-    zconfiguration.client = (parameters                     ) => {
-      this.command('zconfiguration client', parameters);
+    zconfiguration.client.appVersion = (appVersion         ) => {
+      if (appVersion) {
+        this.command('zconfiguration client', { appVersion });
+      } else {
+        this.command('zconfiguration client appVersion');
+      }
       return this.waitForConfiguration();
     };
 
-    zconfiguration.client = (parameters                       ) => {
-      this.command('zconfiguration client', parameters);
+    zconfiguration.client.deviceSystem = (deviceSystem         ) => {
+      if (deviceSystem) {
+        this.command('zconfiguration client', { deviceSystem });
+      } else {
+        this.command('zconfiguration client deviceSystem');
+      }
       return this.waitForConfiguration();
     };
 
@@ -490,7 +533,7 @@ class ZoomRoomsControlSystem extends EventEmitter {
       });
     });
     connection.on('error', (error) => {
-      if(error.code === 'ECONNABORTED') {
+      if (error.code === 'ECONNABORTED') {
         this.emit('close');
       } else {
         this.emit('error', error);
@@ -565,7 +608,7 @@ class ZoomRoomsControlSystem extends EventEmitter {
         reject(new Error('Timeout while waiting for command'));
       }, duration);
       const handleStatus = (tk       ) => {
-        if(tk === 'onUnsupported Command') {
+        if (tk === 'onUnsupported Command') {
           clearTimeout(timeout);
           this.removeListener('zStatus', handleStatus);
           this.removeListener('error', handleError);
