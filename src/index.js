@@ -60,7 +60,7 @@ class ZoomRoomsControlSystem extends EventEmitter {
       return this.waitForCommand('InfoResult');
     };
 
-    zcommand.dial.join = (parameters:{meetingNumber: string}) => {
+    zcommand.dial.join = (parameters:{meetingNumber: string, password?: string}) => {
       this.command('zcommand dial join', parameters);
       return this.waitForCommand();
     };
