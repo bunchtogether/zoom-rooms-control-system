@@ -2,8 +2,6 @@
 
 [![npm version](https://badge.fury.io/js/%40bunchtogether%2Fzoom-rooms-control-system.svg)](http://badge.fury.io/js/%40bunchtogether%2Fzoom-rooms-control-system)
 
-Unofficial Zoom [REST API](https://marketplace.zoom.us/docs/api-reference/introduction) client generated from the [Zoom API (v2) Swagger definition](https://marketplace.zoom.us/docs/api-reference/zoom-api/Zoom%20API.oas2.json) using [swagger-typescript-codegen](https://www.npmjs.com/package/swagger-typescript-codegen) and subsequent modifications.
-
 ZOOM is a trademark of Zoom Video Communications, Inc. All content on this page derived from the [Zoom API (v2) Swagger definition](https://marketplace.zoom.us/docs/api-reference/zoom-api/Zoom%20API.oas2.json) copyright Zoom Video Communications, Inc.
 
 ## Install
@@ -48,3 +46,4 @@ Class representing a Zoom Rooms Control System
 
 -   `host` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** 
 -   `password` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+-   `logger` **Logger**  (optional, default `makeLogger('ZR-CSAPI')`)

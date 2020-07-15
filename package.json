@@ -1,6 +1,6 @@
 {
   "name": "@bunchtogether/zoom-rooms-control-system",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "dist/index.js",
   "repository": "https://github.com/bunchtogether/zoom-rooms-control-system.git",
   "author": "John Wehr <johnwehr@bunchenterprise.com>",
@@ -15,17 +15,13 @@
     "lint:js": "./node_modules/.bin/eslint -c ./.eslintrc --no-eslintrc --fix .",
     "lint:flow": "./node_modules/.bin/flow --show-all-errors",
     "coverage": "codecov",
-    "documentation": "documentation readme src/index.js --section='API'",
-    "start-pre-commit": "git stash -q --keep-index",
-    "end-pre-commit": "git add -u && git stash pop -q"
+    "documentation": "documentation readme src/index.js --section='API'"
   },
-  "pre-commit": [
-    "lint",
-    "start-pre-commit",
-    "build",
-    "documentation",
-    "end-pre-commit"
-  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint && yarn documentation && yarn build && git add dist ./README.md"
+    }
+  },
   "jest": {
     "coverageDirectory": "./coverage/",
     "collectCoverage": true,
@@ -53,6 +49,7 @@
     "flow-bin": "^0.102.0",
     "flow-remove-types": "^2.102.0-rc",
     "flow-typed": "^2.5.2",
+    "husky": "^4.2.5",
     "jest": "^24.8.0",
     "jest-flow-transform": "^1.0.1",
     "pre-commit": "^1.2.2",
@@ -60,7 +57,11 @@
     "uuid": "^3.3.2"
   },
   "dependencies": {
+    "colors": "^1.4.0",
+    "logform": "^2.2.0",
+    "moment": "^2.27.0",
     "ssh2": "^0.8.4",
-    "ssh2-streams": "^0.4.4"
+    "ssh2-streams": "^0.4.4",
+    "winston": "^3.3.3"
   }
 }

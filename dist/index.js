@@ -4,6 +4,15 @@
 const { EventEmitter } = require('events');
 const { Client } = require('ssh2');
 const { SSH2Stream } = require('ssh2-streams');
+const makeLogger = require('./logger');
+
+               
+                          
+                         
+                         
+                          
+                             
+  
 
 /**
  * Class representing a Zoom Rooms Control System
@@ -16,13 +25,17 @@ class ZoomRoomsControlSystem extends EventEmitter {
                    
                          
                   
-                  
+                 
+                         
+                                   
+                                     
 
-  constructor(host       , password       ) {
+  constructor(host       , password       , logger         = makeLogger('ZR-CSAPI')) {
     super();
     this.host = host;
     this.password = password;
-
+    this.logger = logger;
+    this.enableFuzzing = false;
     const zcommand        = {
       dial: {},
       call: {},
@@ -38,7 +51,7 @@ class ZoomRoomsControlSystem extends EventEmitter {
       call: {},
       audio: {},
       video: {},
-      client: {}
+      client: {},
     };
     this.zconfiguration = zconfiguration;
 
@@ -514,6 +527,7 @@ class ZoomRoomsControlSystem extends EventEmitter {
       username: 'zoom',
       password: this.password,
     });
+    this.logger.info(`Connecting via SSH to zoom@${this.host}:2244`);
     await new Promise((resolve, reject) => {
       const handleReady = () => {
         connection.removeListener('error', handleError);
@@ -525,15 +539,6 @@ class ZoomRoomsControlSystem extends EventEmitter {
       };
       connection.once('ready', handleReady);
       connection.once('error', handleError);
-    });
-    const stream = await new Promise((resolve, reject) => {
-      connection.shell((error, s) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(s);
-        }
-      });
     });
     connection.on('error', (error) => {
       if (error.code === 'ECONNABORTED') {
@@ -549,6 +554,21 @@ class ZoomRoomsControlSystem extends EventEmitter {
       delete this.connection;
       this.emit('close');
     });
+    this.connection = connection;
+    this.logger.info('Starting shell');
+    const stream = await new Promise((resolve, reject) => {
+      connection.shell((error, s) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(s);
+        }
+      });
+    });
+    if (!this.connection) {
+      throw new Error('Unable to connect to Zoom Room, connection does not exist');
+    }
+    this.stream = stream;
     stream.on('error', (error) => {
       delete this.stream;
       delete this.connection;
@@ -559,6 +579,94 @@ class ZoomRoomsControlSystem extends EventEmitter {
       delete this.stream;
       delete this.connection;
       connection.end();
+    });
+    if (this.enableFuzzing) {
+      clearTimeout(this.fuzzingTimeout);
+      clearInterval(this.fuzzingInterval);
+      this.logger.warn('Fuzzing enabled! This is a feature for testing this library that will send bad data to connection.');
+      const fuzz = () => {
+        try {
+          const v = Math.random();
+          if (v > 0.9) {
+            this.logger.warn('FUZZ: Emitting error');
+            this.emit('error', new Error('Fuzzing error'));
+          } else if (v > 0.8) {
+            this.logger.warn('FUZZ: Closing connection');
+            connection.end();
+          } else if (v > 0.7) {
+            this.logger.warn('FUZZ: Destroying stream with error');
+            stream.destroy(new Error('Fuzzing stream error'));
+          } else if (v > 0.6) {
+            this.logger.warn('FUZZ: Switching to CLI format and sending zStatus SystemUnit command');
+            this.command('format cli');
+            this.command('zstatus systemunit');
+          } else if (v > 0.5) {
+            this.logger.warn('FUZZ: Sending invalid string to stream parser then sending zStatus SystemUnit command');
+            stream.push(Buffer.from(Math.random().toString()));
+            this.command('zstatus systemunit');
+          } else if (v > 0.4) {
+            this.logger.warn('FUZZ: Sending invalid message object to stream parser');
+            stream.push(Buffer.from(JSON.stringify({ [Math.random().toString()]: Math.random().toString() }, null, 2)));
+          } else if (v > 0.3) {
+            this.logger.warn('FUZZ: Sending 100 zStatus SystemUnit commands');
+            for (let i = 0; i < 100; i += 1) {
+              this.command('zstatus systemunit');
+            }
+          } else if (v > 0.2) {
+            this.logger.warn('FUZZ: Disconnecting');
+            this.disconnect();
+          } else if (v > 0.1) {
+            this.logger.warn('FUZZ: Sending invalid zConfiguration');
+            this.command(`zconfiguration ${Math.random()}`);
+          } else if (v > 0) {
+            this.logger.warn('FUZZ: Sending invalid zCommand');
+            this.command(`zcommand ${Math.random()}`);
+          }
+          this.fuzzingTimeout = setTimeout(fuzz, Math.round(Math.random() * 30000));
+        } catch (error) {
+          this.logger.error('FUZZ: Uncaught error');
+          this.logger.errorStack(error);
+        }
+      };
+      fuzz();
+      this.fuzzingInterval = setInterval(() => {
+        try {
+          const commands = ['zstatus call status',
+            'zstatus audio input line',
+            'zstatus audio output line',
+            'zstatus video camera line',
+            'zstatus video optimizable',
+            'zstatus systemunit',
+            'zstatus capabilities',
+            'zstatus sharing',
+            'zstatus camerashare',
+            'zstatus call layout',
+            'zstatus call closedcaption available',
+            'zstatus numberofscreens'];
+          this.command(commands[Math.floor(Math.random() * commands.length)]);
+        } catch (error) {
+          this.logger.error('FUZZ: Uncaught error (zStatus interval)');
+          this.logger.errorStack(error);
+          clearInterval(this.fuzzingInterval);
+        }
+      }, 5000);
+    }
+    this.logger.info('Waiting for startup messages...');
+    await new Promise((resolve) => {
+      let timeout;
+      const handleTimeout = () => {
+        stream.removeListener('data', handleData);
+        resolve();
+      };
+      const handleData = (data) => {
+        if (data) {
+          data.toString().trim().split('\n').map((line) => this.logger.warn(line));
+        }
+        clearTimeout(timeout);
+        timeout = setTimeout(handleTimeout, 1000);
+      };
+      timeout = setTimeout(handleTimeout, 1000);
+      stream.on('data', handleData);
     });
     let lines = null;
     stream.on('data', (data) => {
@@ -571,6 +679,7 @@ class ZoomRoomsControlSystem extends EventEmitter {
           if (line.indexOf('}') === 0) {
             try {
               const object = JSON.parse(lines.join('\n'));
+              JSON.stringify(object, null, 2).split('\n').map((l) => this.logger.warn(l));
               const { type, topKey } = object;
               if (!type) {
                 throw new Error(`Missing type in message object ${JSON.stringify(object)}`);
@@ -584,21 +693,39 @@ class ZoomRoomsControlSystem extends EventEmitter {
               }
               this.emit(type, topKey, top);
             } catch (error) {
-              this.emit('error', error);
+              if (error.name === 'SyntaxError') {
+                this.logger.error('JSON parse error');
+                lines.map((l) => this.logger.warn(l));
+              } else {
+                this.emit('error', error);
+              }
             }
             lines = null;
           }
-        } else if (line === '*r Login successful') {
-          this.emit('zStatus', 'Login', {});
-          return;
         }
       }
     });
-    this.stream = stream;
-    this.connection = connection;
-    this.command('format json');
-    this.version = await this.waitForStatus('Login');
-    await this.waitForStatus();
+    this.logger.info('Checking SystemUnit status');
+    for (let i = 1; i < 7; i += 1) {
+      if (!this.stream) {
+        throw new Error('Unable to connect to Zoom Room, stream does not exist');
+      }
+      if (!this.connection) {
+        throw new Error('Unable to connect to Zoom Room, connection does not exist');
+      }
+      try {
+        this.command('format json');
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await this.zstatus.systemUnit();
+        return;
+      } catch (error) {
+        this.logger.error('Unable to get systemUnit status');
+        this.logger.errorStack(error);
+      }
+      this.logger.warn(`Retrying ZR-CSAPI handshake in ${i * i} seconds, attempt ${i}`);
+      await new Promise((resolve) => setTimeout(resolve, 1000 * i * i));
+    }
+    throw new Error('Unable to connect to Zoom Room');
   }
 
 
@@ -696,7 +823,7 @@ class ZoomRoomsControlSystem extends EventEmitter {
   command(s       , parameters         ) {
     const stream = this.stream;
     if (!stream) {
-      throw new Error('Not connected');
+      throw new Error(`Unable to send command, not connected: ${s} ${parameters ? JSON.stringify(parameters) : ''}`);
     }
     const command = [s];
     if (parameters) {
@@ -715,6 +842,8 @@ class ZoomRoomsControlSystem extends EventEmitter {
   }
 
   async disconnect() {
+    clearTimeout(this.fuzzingTimeout);
+    clearInterval(this.fuzzingInterval);
     const stream = this.stream;
     if (!stream) {
       return;
