@@ -44,6 +44,6 @@ Class representing a Zoom Rooms Control System
 
 #### Parameters
 
--   `host` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** 
--   `password` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** 
--   `logger` **Logger**  (optional, default `makeLogger('ZR-CSAPI')`)
+-   `host`  
+-   `password`  
+-   `logger`   (optional, default `makeLogger('ZR-CSAPI')`)

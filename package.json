@@ -1,6 +1,6 @@
 {
   "name": "@bunchtogether/zoom-rooms-control-system",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "dist/index.js",
   "repository": "https://github.com/bunchtogether/zoom-rooms-control-system.git",
   "author": "John Wehr <johnwehr@bunchenterprise.com>",
@@ -15,7 +15,7 @@
     "lint:js": "./node_modules/.bin/eslint -c ./.eslintrc --no-eslintrc --fix .",
     "lint:flow": "./node_modules/.bin/flow --show-all-errors",
     "coverage": "codecov",
-    "documentation": "documentation readme src/index.js --section='API'"
+    "documentation": "documentation readme dist/index.js --section='API'"
   },
   "husky": {
     "hooks": {
@@ -27,13 +27,16 @@
     "collectCoverage": true,
     "collectCoverageFrom": [
       "src/*.js"
-    ],
-    "transform": {
-      "^.+\\.js(?:\\.flow)?$": "jest-flow-transform"
-    }
+    ]
   },
   "devDependencies": {
-    "babel-eslint": "9.0.0",
+    "@babel/core": "^7.10.2",
+    "@babel/plugin-proposal-class-properties": "^7.10.1",
+    "@babel/plugin-transform-flow-strip-types": "^7.10.1",
+    "@babel/preset-env": "^7.10.2",
+    "@babel/preset-flow": "^7.10.1",
+    "babel-eslint": "^10.1.0",
+    "babel-jest": "^26.0.1",
     "codecov": "^3.5.0",
     "cross-env": "^5.2.0",
     "documentation": "^11.0.1",
@@ -46,8 +49,9 @@
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.14.2",
     "expect": "^24.8.0",
-    "flow-bin": "0.105.0",
-    "flow-remove-types": "^2.102.0-rc",
+    "flow-bin": "^0.127.0",
+    "flow-copy-source": "^2.0.9",
+    "flow-remove-types": "^2.127.0",
     "flow-typed": "^2.5.2",
     "husky": "^4.2.5",
     "jest": "^24.8.0",

@@ -18,17 +18,17 @@ const makeLogger = require('./logger');
  * Class representing a Zoom Rooms Control System
  */
 class ZoomRoomsControlSystem extends EventEmitter {
-  host        ;
-  password        ;
-  connection        ;
-  stream            ;
-  zcommand        ;
-  zconfiguration        ;
-  zstatus        ;
-  logger        ;
-  enableFuzzing         ;
-  fuzzingTimeout                  ;
-  fuzzingInterval                   ;
+                       
+                           
+                             
+                             
+                           
+                                 
+                          
+                         
+                                 
+                                           
+                                             
 
   constructor(host       , password       , logger         = makeLogger('ZR-CSAPI')) {
     super();

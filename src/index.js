@@ -18,17 +18,17 @@ type Logger = {
  * Class representing a Zoom Rooms Control System
  */
 class ZoomRoomsControlSystem extends EventEmitter {
-  host: string;
-  password: string;
-  connection: Client;
-  stream: SSH2Stream;
-  zcommand: Object;
-  zconfiguration: Object;
-  zstatus: Object;
-  logger: Logger;
-  enableFuzzing: boolean;
-  fuzzingTimeout: TimeoutID | void;
-  fuzzingInterval: IntervalID | void;
+  declare host: string;
+  declare password: string;
+  declare connection: Client;
+  declare stream: SSH2Stream;
+  declare zcommand: Object;
+  declare zconfiguration: Object;
+  declare zstatus: Object;
+  declare logger: Logger;
+  declare enableFuzzing: boolean;
+  declare fuzzingTimeout: TimeoutID | void;
+  declare fuzzingInterval: IntervalID | void;
 
   constructor(host:string, password:string, logger?:Logger = makeLogger('ZR-CSAPI')) {
     super();
