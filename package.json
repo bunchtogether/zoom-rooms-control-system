@@ -1,6 +1,6 @@
 {
   "name": "@bunchtogether/zoom-rooms-control-system",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "dist/index.js",
   "repository": "https://github.com/bunchtogether/zoom-rooms-control-system.git",
   "author": "John Wehr <johnwehr@bunchenterprise.com>",
@@ -37,7 +37,7 @@
     "codecov": "^3.5.0",
     "cross-env": "^5.2.0",
     "documentation": "^11.0.1",
-    "eslint": "^6.0.1",
+    "eslint": "6.0.1",
     "eslint-config-bunchtogether": "^1.1.6",
     "eslint-plugin-flowtype": "^3.11.1",
     "eslint-plugin-flowtype-errors": "^4.1.0",
@@ -62,6 +62,6 @@
     "moment": "^2.27.0",
     "ssh2": "^0.8.4",
     "ssh2-streams": "^0.4.4",
-    "winston": "^3.3.3"
+    "winston": "3.2.1"
   }
 }
