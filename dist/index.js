@@ -678,7 +678,7 @@ class ZoomRoomsControlSystem extends EventEmitter {
           lines.push(line);
           if (line.indexOf('}') === 0) {
             try {
-              const object = JSON.parse(lines.join('\n'));
+              const object = JSON.parse(lines.join(''));
               JSON.stringify(object, null, 2).split('\n').map((l) => this.logger.warn(l));
               const { type, topKey } = object;
               if (!type) {
